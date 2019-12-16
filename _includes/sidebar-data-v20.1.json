@@ -456,6 +456,12 @@
         "title": "Develop",
         "items": [
           {
+            "title": "Overview",
+            "urls": [
+              "/${VERSION}/developer-guide-overview.html"
+            ]
+          },
+          {
             "title": "Connect to the Database",
             "urls": [
               "/${VERSION}/connect-to-the-database.html"
