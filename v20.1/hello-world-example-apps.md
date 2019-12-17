@@ -1,5 +1,5 @@
 ---
-title: "Hello World" Example Apps
+title: Hello World Example Apps
 summary: A list of small example applications that may be useful to refer to during application development
 toc: true
 ---
