@@ -1,5 +1,5 @@
 ---
-title: Use Transactions for Atomicity
+title: Run Multi-Statement Transactions
 summary: How to use multi-statement transactions during application development
 toc: true
 ---

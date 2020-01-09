@@ -16,7 +16,7 @@ This guide will show you how to get your application working with CockroachDB as
 - [Update Data](update-data.html)
 - [Delete Data](delete-data.html)
 - [Make Queries Fast](make-queries-fast.html)
-- [Use Transactions for Atomicity](use-transactions-for-atomicity.html)
+- [Run Multi-Statement Transactions](run-multi-statement-transactions.html)
 - ['Hello World' Example Apps](hello-world-example-apps.html)
 
 ## See also

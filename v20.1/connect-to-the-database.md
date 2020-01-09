@@ -100,10 +100,25 @@ db, err := sql.Open("postgres",
 
 ## See also
 
+Reference information:
+
 - [Connection parameters][connection_params]
 - [Manual deployments][manual]
 - [Orchestrated deployments][orchestrated]
 - [Start a local cluster (secure)][local_secure]
+
+<a name="tasks"></a>
+
+Specific tasks:
+
+- [Connect to the Database](connect-to-the-database.html)
+- [Insert Data](insert-data.html)
+- [Query Data](query-data.html)
+- [Update Data](update-data.html)
+- [Delete Data](delete-data.html)
+- [Make Queries Fast](make-queries-fast.html)
+- [Run Multi-Statement Transactions](run-multi-statement-transactions.html)
+- [Hello World Example apps](hello-world-example-apps.html)
 
 <!-- Reference Links -->
 
