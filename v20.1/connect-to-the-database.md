@@ -111,7 +111,6 @@ Reference information:
 
 Specific tasks:
 
-- [Connect to the Database](connect-to-the-database.html)
 - [Insert Data](insert-data.html)
 - [Query Data](query-data.html)
 - [Update Data](update-data.html)
