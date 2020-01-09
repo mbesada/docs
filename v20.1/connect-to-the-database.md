@@ -34,6 +34,9 @@ $ cockroach sql --certs-dir=certs --host=localhost:26257
 
 {% include copy-clipboard.html %}
 ~~~ java
+import java.sql.*;
+import javax.sql.DataSource;
+
 PGSimpleDataSource ds = new PGSimpleDataSource();
 ds.setServerName("localhost");
 ds.setPortNumber(26257);
@@ -56,6 +59,8 @@ ds.setApplicationName("BasicExample");
 
 {% include copy-clipboard.html %}
 ~~~ python
+import psycopg2
+
 conn = psycopg2.connect(
     database='bank',
     user='maxroach',
@@ -76,6 +81,13 @@ conn = psycopg2.connect(
 
 {% include copy-clipboard.html %}
 ~~~ go
+import (
+    "database/sql"
+    "fmt"
+    "log"
+    _ "github.com/lib/pq"
+)
+
 db, err := sql.Open("postgres",
         "postgresql://maxroach@localhost:26257/bank?ssl=true&sslmode=require&sslrootcert=certs/ca.crt&sslkey=certs/client.maxroach.key&sslcert=certs/client.maxroach.crt")
     if err != nil {
