@@ -422,9 +422,9 @@
             ]
           },
           {
-            "title": "Use Transactions for Atomicity",
+            "title": "Run Multi-Statement Transactions",
             "urls": [
-              "/${VERSION}/use-transactions-for-atomicity.html"
+              "/${VERSION}/run-multi-statement-transactions.html"
             ]
           },
           {
