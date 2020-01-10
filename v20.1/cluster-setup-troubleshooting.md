@@ -57,7 +57,7 @@ Other services may be running on port 26257 or 8080 (CockroachDB's default `--li
 
   If you change the port, you will need to include the `--port=<specified port>` flag in each subsequent cockroach command or change the `COCKROACH_PORT` environment variable.
 
-### Networking issues
+### Single-node networking issues
 
 Networking issues might prevent the node from communicating with itself on its hostname. You can control the hostname CockroachDB uses with the [`--listen-addr` flag](cockroach-start.html#networking).
 
@@ -431,6 +431,41 @@ If you still see under-replicated/unavailable ranges on the Cluster Overview pag
 3.  In the **Connections** table, identify the node with the under-replicated/unavailable ranges and click the node ID in the Node column.
 4.  To view the **Range Report** for a range, click on the range number in the **Under-replicated (or slow)** table or **Unavailable** table.
 5. On the Range Report page, scroll down to the **Simulated Allocator Output** section. The table contains an error message which explains the reason for the under-replicated range. Follow the guidance in the message to resolve the issue. If you need help understanding the error or the guidance, [file an issue](file-an-issue.html). Please be sure to include the full range report and error message when you submit the issue.
+
+## Node liveness issues
+
+"Node liveness" refers to whether a node in your cluster has been determined to be "dead" or "alive" by the rest of the cluster. This is achieved using checks that ensure that each node connected to the cluster is updating its liveness record. This information is shared with the rest of the cluster using an internal gossip protocol.
+
+Common reasons for node liveness issues include:
+
+- Heavy I/O load on the node. Because each node needs to update a liveness record on disk, maxing out disk bandwidth can cause liveness heartbeats to be missed. See also: [Capacity planning issues](#capacity-planning-issues).
+- Any [Networking issues](#networking-issues) with the node.
+
+To check for node liveness issues in your cluster, run the query below, which returns gossip protocol information for each node in the cluster. Check the `is_live` column (on the far right) to see the node's liveness status. If the value is `false`, that node is not updating its liveness record.
+
+{% include copy-clipboard.html %}
+~~~ sql
+SELECT * FROM crdb_internal.gossip_nodes;
+~~~
+
+~~~
+  node_id | network |     address     | advertise_address | sql_network |   sql_address   | advertise_sql_address | attrs |         locality         | cluster_name | server_version | build_tag |            started_at            | is_live | ranges | leases
++---------+---------+-----------------+-------------------+-------------+-----------------+-----------------------+-------+--------------------------+--------------+----------------+-----------+----------------------------------+---------+--------+--------+
+        1 | tcp     | 127.0.0.1:53365 | 127.0.0.1:53365   | tcp         | 127.0.0.1:53366 | 127.0.0.1:53366       | []    | region=us-east1,az=b     |              | 19.2           | v19.2.1   | 2020-01-10 16:36:26.751726+00:00 |  true   |     62 |     24
+        2 | tcp     | 127.0.0.1:53368 | 127.0.0.1:53368   | tcp         | 127.0.0.1:53369 | 127.0.0.1:53369       | []    | region=us-east1,az=c     |              | 19.2           | v19.2.1   | 2020-01-10 16:36:26.832938+00:00 |  true   |     67 |     20
+        3 | tcp     | 127.0.0.1:53375 | 127.0.0.1:53375   | tcp         | 127.0.0.1:53376 | 127.0.0.1:53376       | []    | region=us-east1,az=d     |              | 19.2           | v19.2.1   | 2020-01-10 16:36:26.925553+00:00 |  true   |     66 |     22
+        4 | tcp     | 127.0.0.1:53382 | 127.0.0.1:53382   | tcp         | 127.0.0.1:53383 | 127.0.0.1:53383       | []    | region=us-west1,az=a     |              | 19.2           | v19.2.1   | 2020-01-10 16:36:26.965048+00:00 |  true   |     64 |     17
+        5 | tcp     | 127.0.0.1:53392 | 127.0.0.1:53392   | tcp         | 127.0.0.1:53393 | 127.0.0.1:53393       | []    | region=us-west1,az=b     |              | 19.2           | v19.2.1   | 2020-01-10 16:36:27.008154+00:00 |  true   |     62 |     18
+        6 | tcp     | 127.0.0.1:53405 | 127.0.0.1:53405   | tcp         | 127.0.0.1:53406 | 127.0.0.1:53406       | []    | region=us-west1,az=c     |              | 19.2           | v19.2.1   | 2020-01-10 16:36:27.063192+00:00 |  true   |     62 |     17
+        7 | tcp     | 127.0.0.1:53417 | 127.0.0.1:53417   | tcp         | 127.0.0.1:53418 | 127.0.0.1:53418       | []    | region=europe-west1,az=b |              | 19.2           | v19.2.1   | 2020-01-10 16:36:27.108815+00:00 |  true   |     66 |     19
+        8 | tcp     | 127.0.0.1:53433 | 127.0.0.1:53433   | tcp         | 127.0.0.1:53434 | 127.0.0.1:53434       | []    | region=europe-west1,az=c |              | 19.2           | v19.2.1   | 2020-01-10 16:36:27.164973+00:00 |  true   |     64 |     20
+        9 | tcp     | 127.0.0.1:53447 | 127.0.0.1:53447   | tcp         | 127.0.0.1:53448 | 127.0.0.1:53448       | []    | region=europe-west1,az=d |              | 19.2           | v19.2.1   | 2020-01-10 16:36:27.220454+00:00 |  true   |     64 |     20
+(9 rows)
+~~~
+
+Note that the cluster used for this example is a local demo cluster started with [`cockroach demo movr --geo-partitioned-replicas`](cockroach-demo.html#run-cockroach-demo-with-geo-partitioned-replicas).
+
+For more information about how node liveness works internally, see [the architecture documentation on the replication layer](architecture/replication-layer.html#epoch-based-leases-table-data).
 
 ## Something else?
 
